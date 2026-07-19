@@ -1,22 +1,198 @@
-body {
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-.title {
-  font-size: 46px;
-  margin: 20px 0;
-  color: #444;
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+  color: #e0e0e0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .main {
-  margin-top: 50px;
+  width: 100%;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  
   align-items: center;
-  width: 100%;
-  height: 100vh;
+  justify-content: center;
+  padding: 2rem;
+  gap: 1.5rem;
 }
 
+.title {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  letter-spacing: -0.02em;
+  text-align: center;
+}
 
+.draw {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 900px;
+}
+
+.draw canvas {
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  background: #1a1a2e;
+  image-rendering: pixelated;
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  transition: box-shadow 0.2s;
+}
+
+.draw canvas:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+}
+
+.draw > div[tabindex] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+.draw > div[tabindex] > br {
+  display: none;
+}
+
+label, button, .toolbar-item {
+  font-family: inherit;
+  font-size: 0.875rem;
+}
+
+select {
+  background: #1e1e3a;
+  color: #e0e0e0;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 0.4rem 0.75rem;
+  font-family: inherit;
+  font-size: 0.85rem;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+select:focus {
+  border-color: #7c6ef0;
+}
+
+input[type="color"] {
+  width: 36px;
+  height: 36px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  cursor: pointer;
+  background: none;
+  padding: 2px;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 6px;
+}
+
+/* Unified toolbar items */
+.toolbar-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 40px;
+  padding: 0 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  color: #ccc;
+  font-weight: 500;
+  cursor: default;
+}
+
+button.toolbar-item {
+  cursor: pointer;
+  font-weight: 600;
+  color: #e0e0e0;
+  transition: all 0.2s;
+}
+
+button.toolbar-item:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+button.toolbar-item:active {
+  transform: translateY(0);
+}
+
+button.toolbar-item:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.toolbar-item .ti {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+/* Toolbar row */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (max-width: 600px) {
+  .main {
+    padding: 1rem;
+  }
+
+  label, button {
+    font-size: 0.8rem;
+  }
+
+  .toolbar {
+    gap: 0.5rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 12px;
+  }
+
+  label {
+    padding: 0.4rem 0.75rem;
+  }
+
+  button {
+    padding: 0.4rem 0.85rem;
+  }
+}

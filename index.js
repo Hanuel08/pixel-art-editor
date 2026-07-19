@@ -36,7 +36,7 @@ const elt = (type, props, ...children) => {
   return dom;
 };
 
-const scale = 10;
+let scale = 10;
 
 function drawPicture2(picture, canvas, scale) {
   canvas.width = picture.width * scale;
@@ -81,6 +81,7 @@ class PictureCanvas {
 
     canvas.width = picture.width * scale;
     canvas.height = picture.height * scale;
+    canvas.style.aspectRatio = `${picture.width * scale} / ${picture.height * scale}`;
 
     return canvas;
   }
@@ -178,11 +179,9 @@ class PixelEditor {
           }
           this.syncState(this.state);
         },
-        ///////
       },
       this.canvas.dom,
-      elt("br"),
-      ...this.controls.reduce((a, c) => a.concat(" ", c.dom), [])
+      elt("div", { className: "toolbar" }, ...this.controls.reduce((a, c) => a.concat(" ", c.dom), []))
     );
     //console.log("this.dom", this.dom);
 
@@ -212,7 +211,7 @@ class ToolSelect {
         )
       )
     );
-    this.dom = elt("label", null, "🖌 Tool: ", this.select);
+    this.dom = elt("div", { className: "toolbar-item" }, elt("i", { className: "ti ti-pencil" }), this.select);
   }
   syncState(state) {
     this.select.value = state.tool;
@@ -226,7 +225,7 @@ class ColorSelect {
       value: state.color,
       onchange: () => dispatch({ color: this.input.value }),
     });
-    this.dom = elt("label", null, "🎨 Color: ", this.input);
+    this.dom = elt("div", { className: "toolbar-item" }, elt("i", { className: "ti ti-palette" }), this.input);
   }
   syncState(state) {
     this.input.value = state.color;
@@ -463,9 +462,10 @@ class SaveButton {
     this.dom = elt(
       "button",
       {
+        className: "toolbar-item",
         onclick: () => this.save(),
       },
-      "💾 Save"
+      elt("i", { className: "ti ti-device-floppy" }), " Save"
     );
   }
   save() {
@@ -500,9 +500,10 @@ class LoadButton {
     this.dom = elt(
       "button",
       {
+        className: "toolbar-item",
         onclick: () => startLoad(dispatch),
       },
-      "📁 Load"
+      elt("i", { className: "ti ti-file-upload" }), " Load"
     );
   }
   syncState() {}
@@ -571,10 +572,11 @@ class UndoButton {
     this.dom = elt(
       "button",
       {
+        className: "toolbar-item",
         onclick: () => dispatch({ undo: true }),
         disabled: state.done.length == 0,
       },
-      "⮪ Undo"
+      elt("i", { className: "ti ti-arrow-back-up" }), " Undo"
     );
   }
   syncState(state) {
@@ -605,6 +607,15 @@ function startPixelEditor({
   tools = baseTools,
   controls = baseControls,
 }) {
+  const updateScale = () => {
+    const maxWidth = Math.min(window.innerWidth - 40, 840);
+    const picW = state.picture.width;
+    const picH = state.picture.height;
+    scale = Math.max(4, Math.floor(maxWidth / picW));
+  };
+
+  updateScale();
+
   let app = new PixelEditor(state, {
     tools,
     controls,
@@ -613,6 +624,18 @@ function startPixelEditor({
       app.syncState(state);
     },
   });
+
+  const canvas = app.dom.querySelector("canvas");
+  const resizeCanvas = () => {
+    updateScale();
+    canvas.width = state.picture.width * scale;
+    canvas.height = state.picture.height * scale;
+    canvas.style.aspectRatio = `${canvas.width} / ${canvas.height}`;
+    app.syncState(state);
+  };
+
+  window.addEventListener("resize", resizeCanvas);
+
   return app.dom;
 }
 
